@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Statu;
 use App\Http\Requests\StoreStatuRequest;
 use App\Http\Requests\UpdateStatuRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class StatuController extends Controller
 {
@@ -15,8 +17,9 @@ class StatuController extends Controller
      */
     public function index()
     {
-        $role = Statu::all();
-        return $role;
+        $status = Statu::all()->toArray();
+        
+        return array_reverse($status);
     }
 
     /**
@@ -35,11 +38,11 @@ class StatuController extends Controller
      * @param  \App\Http\Requests\StoreStatuRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreStatuRequest $request)
+    public function store(Request $request)
     {
-        $role = new Statu;
-        $role->role = $request->role;
-        $role->save();
+        $statu = new Statu;
+        $statu->name = $request->name;
+        $statu->save();
 
         return "created";
     }
@@ -61,9 +64,10 @@ class StatuController extends Controller
      * @param  \App\Models\Statu  $statu
      * @return \Illuminate\Http\Response
      */
-    public function edit(Statu $statu)
+    public function edit($id)
     {
-        //
+        $statu = Statu::find($id);
+        return response()->json($statu);
     }
 
     /**
@@ -73,11 +77,11 @@ class StatuController extends Controller
      * @param  \App\Models\Statu  $statu
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateStatuRequest $request, Statu $statu)
+    public function update(Request $request, $id)
     {
-        $role = Role::find($id);
-        $role->role = $request->role;
-        $role->save();
+        $statu = new Statu;
+        $statu->name = $request->name;
+        $statu->save();
 
         return 'Updated';
     }
@@ -88,11 +92,11 @@ class StatuController extends Controller
      * @param  \App\Models\Statu  $statu
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Statu $statu)
+    public function destroy($id)
     {
-        $role = Role::withTrashed()
-        ->where('id', $id);
-        $role->delete();
-        return 'delete';
+        $project = Statu::find($id);
+        $project->delete();
+        
+        return response()->json('The project successfully deleted');
     }
 }

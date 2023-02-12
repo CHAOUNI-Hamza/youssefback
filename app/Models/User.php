@@ -9,10 +9,29 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Project;
+use App\Models\Task;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    /**
+     * Get the phone associated with the user.
+     */
+    public function projet()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    /**
+     * Get the phone associated with the user.
+     */
+    public function task()
+    {
+        return $this->hasMany(Task::class);
+    }
+    
 
     /**
      * The attributes that are mass assignable.

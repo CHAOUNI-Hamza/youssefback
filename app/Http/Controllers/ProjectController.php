@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -13,7 +15,7 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index() 
     {
         $projects = Project::all()->toArray();
         
@@ -36,15 +38,15 @@ class ProjectController extends Controller
      * @param  \App\Http\Requests\StoreProjectRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProjectRequest $request)
+    public function store(Request $request)
     {
         $project = new Project;
-        $role->manager_id = Auth::user()->id;
-        $role->status_id = $request->status_id;
-        $role->title = $request->title;
-        $role->deadline = $request->deadline;
-        $role->description = $request->description;
-        $role->save();
+        $project->manager_id = Auth::user()->id;
+        //$project->manager_id = $request->manager_id;
+        $project->title = $request->title;
+        $project->deadline = $request->deadline;
+        $project->description = $request->description;
+        $project->save();
 
         return "created";
     }
@@ -66,10 +68,10 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $project)
+    public function edit($id)
     {
-        $project = Project::find($id);
-        return response()->json($project);
+        $projects = Project::find($id);
+        return response()->json($projects);
     }
 
     /**
@@ -79,15 +81,15 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(Request $request, $id)
     {
-        $project = new Project;
-        $role->manager_id = Auth::user()->id;
-        $role->status_id = $request->status_id;
-        $role->title = $request->title;
-        $role->deadline = $request->deadline;
-        $role->description = $request->description;
-        $role->save();
+        $project = Project::find($id);
+        //$role->manager_id = Auth::user()->id;
+        $project->manager_id = $request->manager_id;
+        $project->title = $request->title;
+        $project->deadline = $request->deadline;
+        $project->description = $request->description;
+        $project->save();
 
         return "Updated";
     }
@@ -98,7 +100,7 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Project $project)
+    public function destroy($id)
     {
         $project = Project::find($id);
         $project->delete();

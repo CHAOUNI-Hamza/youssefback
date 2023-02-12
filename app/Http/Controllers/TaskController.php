@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -15,7 +17,9 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        $task = Task::all()->toArray();
+        
+        return array_reverse($task);
     }
 
     /**
@@ -34,9 +38,19 @@ class TaskController extends Controller
      * @param  \App\Http\Requests\StoreTaskRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTaskRequest $request)
+    public function store(Request $request)
     {
-        //
+        $task = new Task;
+        $task->manager_id = Auth::user()->id;
+        $task->project_id = $request->project_id;
+        $task->statu_id = $request->statu_id;
+        
+        $task->title = $request->title;
+        $task->deadline = $request->deadline;
+        $task->description = $request->description;
+        $task->save();
+
+        return "created";
     }
 
     /**
@@ -56,9 +70,10 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function edit(Task $task)
+    public function edit($id)
     {
-        //
+        $task = Task::find($id);
+        return response()->json($task);
     }
 
     /**
@@ -68,9 +83,17 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function update(UpdateTaskRequest $request, $id)
     {
-        //
+        $task = Task::find($id);;
+        $task->manager_id = $request->manager_id;
+        $task->project_id = $request->project_id;
+        $task->statu_id = $request->statu_id;
+        
+        $task->title = $request->title;
+        $task->deadline = $request->deadline;
+        $task->description = $request->description;
+        $task->save();
     }
 
     /**
@@ -79,8 +102,11 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy($id)
     {
-        //
+        $task = Task::find($id);
+        $task->delete();
+        
+        return response()->json('The project successfully deleted');
     }
 }

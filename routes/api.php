@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\StatuController;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,9 +49,36 @@ Route::group([
 
     Route::get('index',[ ProjectController::class, 'index' ])->name('login');
     Route::post('store',[ ProjectController::class, 'store' ])->name('logout');
-    Route::get('edit',[ ProjectController::class, 'edit' ])->name('refresh');
-    Route::post('update',[ ProjectController::class, 'update' ])->name('me');
-    Route::post('destroy',[ ProjectController::class, 'destroy' ])->name('store');
+    Route::get('edit/{id}',[ ProjectController::class, 'edit' ])->name('refresh');
+    Route::post('update/{id}',[ ProjectController::class, 'update' ])->name('me');
+    Route::delete('destroy/{id}',[ ProjectController::class, 'destroy' ])->name('store');
+});
 
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'v1/statu'
+
+], function ($router) {
+
+    Route::get('index',[ StatuController::class, 'index' ])->name('login');
+    Route::post('store',[ StatuController::class, 'store' ])->name('logout');
+    Route::get('edit/{id}',[ StatuController::class, 'edit' ])->name('refresh');
+    Route::post('update/{id}',[ StatuController::class, 'update' ])->name('me');
+    Route::delete('destroy/{id}',[ StatuController::class, 'destroy' ])->name('store');
+});
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'v1/task'
+
+], function ($router) {
+
+    Route::get('index',[ TaskController::class, 'index' ])->name('login');
+    Route::post('store',[ TaskController::class, 'store' ])->name('logout');
+    Route::get('edit/{id}',[ TaskController::class, 'edit' ])->name('refresh');
+    Route::post('update/{id}',[ TaskController::class, 'update' ])->name('me');
+    Route::delete('destroy/{id}',[ TaskController::class, 'destroy' ])->name('store');
 });
 
